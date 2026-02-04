@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Mummy! 🌸</title>
+    <link rel="stylesheet" href="mom.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="locked">
+
+    <div id="envelope-modal" class="envelope-modal"> 
+        <div class="envelope-wrapper">
+            <h1 class="envelope-title">🌸 A Message for Mummy</h1>
+            <div class="envelope-container">
+                <div class="envelope">
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-body">
+                        <div class="letter">
+                            <p>To the heart of our home...</p>
+                            <strong>Click below to open</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="open-btn" class="open-btn">Open with Love 💖</button>
+        </div>
+    </div>
+
+    <div id="main-wrapper">
+        <div id="particles-container"></div>
+
+        <header id="navbar">
+            <nav>
+                <a href="#home">Home</a>
+                <a href="#about">Mummy</a>
+                <a href="#surprise">Surprise</a>
+                <a href="#gallery">Memories</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="home" class="hero">
+                <div class="container">
+                    <h1 class="reveal">Happy Birthday, Mummy!</h1>
+                    <p class="reveal">Celebrating the world's most beautiful soul.</p>
+                    <div id="countdown" class="reveal">
+                        <div class="time-box"><span id="days">00</span><p>Days</p></div>
+                        <div class="time-box"><span id="hours">00</span><p>Hrs</p></div>
+                        <div class="time-box"><span id="minutes">00</span><p>Mins</p></div>
+                        <div class="time-box"><span id="seconds">00</span><p>Secs</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="container reveal">
+                <div class="profile-card">
+                    <img src="8.jpg" alt="Mummy" class="profile-pic">
+                    <div class="profile-text">
+                        <h2>✨ Our Dearest Mummy</h2>
+                        <p>You are the glue that holds our family together. Your love is our strength, and your smile is our sunshine. Today we celebrate everything you are!
+                        Thank you for your endless sacrifices, your unwavering support, and your boundless love. We are so grateful to have you as our mother. Wishing you a day filled with joy,
+                         laughter, and all the love you deserve. Happy Birthday, Mummy! 🌷
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="surprise" class="container reveal">
+                <div class="section-title">
+                    <h2>🎁 A Special Surprise</h2>
+                    <p>Scratch the gold box to reveal a hidden message!</p>
+                </div>
+                <div class="scratch-card-box">
+                    <div class="scratch-message">
+                        <h3>"You're not just a Mom, you're our Super-Queen! We love you infinity! ❤️"</h3>
+                    </div>
+                    <canvas id="scratch-canvas" width="300" height="150"></canvas>
+                </div>
+            </section>
+
+            <section id="gallery" class="page-section">
+                <div class="content-card reveal">
+                    <div class="section-header">
+                        <h2 style="font-family: 'Pacifico', cursive; color: var(--pink-deep);">📸 Our Scrapbook</h2>
+                        <p>Little memories pasted with love...</p>
+                    </div>
+                    <div class="notebook-grid">
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="9.jpg" class="notebook-img">
+                            <p class="caption">exquisite moment</p>
+                        </div>
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="2.jpg" class="notebook-img">
+                            <p class="caption">sweet mummy</p>
+                        </div>
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="1.jpg" class="notebook-img">
+                            <p class="caption">Best Mummy</p>
+                        </div>
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="3.jpg" class="notebook-img">
+                            <p class="caption">cool guide</p>
+                        </div>
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="4.jpg" class="notebook-img">
+                            <p class="caption">chill ma'am</p>
+                        </div>
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="6.jpg" class="notebook-img">
+                            <p class="caption">Best Mummy</p>
+                        </div>
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="7.jpg" class="notebook-img">
+                            <p class="caption">cool class teacher</p>
+                        </div>
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="5.jpg" class="notebook-img">
+                            <p class="caption">Best Mummy</p>
+                        </div>
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="11.jpg" class="notebook-img">
+                            <p class="caption">happy family</p>
+                        </div>
+                        <div class="photo-frame">
+                            <div class="tape"></div>
+                            <img src="10.jpg" class="notebook-img">
+                            <p class="caption">moments of joy</p>
+                        </div>
+                    </div>
+            </section>
+
+            <section id="wishes-corner" class="page-section">
+                <div class="content-card reveal">
+                    <div class="section-header">
+                        <h2 style="font-family: 'Pacifico', cursive; color: var(--pink-deep);">💝 Wishes Corner</h2>
+                        <p>Leave a message or a voice note for Mummy</p>
+                    </div>
+
+                    <div class="wish-form-container">
+                        <input type="text" id="sender-name" placeholder="Your Name" class="input-field">
+                        
+                        <div class="input-toggle">
+                            <button id="btn-text" class="toggle-btn active">Write Message</button>
+                            <button id="btn-voice" class="toggle-btn">Record Voice</button>
+                        </div>
+
+                        <textarea id="text-msg" class="input-field" placeholder="Write your birthday wish here..."></textarea>
+
+                        <div id="voice-rec-area" class="hidden">
+                            <button id="record-btn" class="mic-btn">🎤 Start Recording</button>
+                            <p id="rec-status">Ready to record...</p>
+                        </div>
+
+                        <button id="send-wish-btn" class="open-btn">Send Wish to Mummy ✨</button>
+                    </div>
+
+                    <hr style="margin: 40px 0; border: 0; border-top: 1px dashed var(--pink-soft);">
+
+                    <div id="wishes-display-grid" class="notebook-grid">
+                        </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer>
+                <p><center>Created with Love for the Best Mummy 💖</center></p>
+                <p><center>© 2026 Pro Boy Adi</center></p>
+        </footer>
+    </div>
+
+    <script src="mom.js"></script>
+</body>
+</html>

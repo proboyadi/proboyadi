@@ -1,0 +1,306 @@
+:root {
+    --pink-dark: #d81b60;
+    --pink-light: #f48fb1;
+    --gold: #d4af37;
+    --bg-color: #fff5f8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-color);
+    overflow-x: hidden;
+}
+
+/* --- THE BLUR EFFECT --- */
+#main-wrapper {
+    transition: filter 1s ease, transform 1s ease;
+    filter: blur(40px); /* Heavy Blur */
+    pointer-events: none;
+}
+
+body.unlocked #main-wrapper {
+    filter: blur(0);
+    pointer-events: auto;
+}
+
+/* --- LAYOUT & CENTERING --- */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Header Navbar */
+header {
+    position: fixed;
+    top: -100px;
+    width: 100%;
+    background: white;
+    z-index: 100;
+    transition: 0.5s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+nav { display: flex; justify-content: center; padding: 15px; gap: 20px; }
+nav a { text-decoration: none; color: var(--pink-dark); font-weight: bold; }
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #fce4ec, #f06292);
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 100px 100px;
+    color: white;
+}
+
+.hero h1 { font-family: 'Pacifico', cursive; font-size: 3.5rem; margin-bottom: 10px; }
+
+/* Countdown */
+#countdown { display: flex; gap: 15px; margin-top: 30px; }
+.time-box {
+    background: white; color: var(--pink-dark);
+    padding: 15px; border-radius: 15px; min-width: 80px;
+    border: 2px solid var(--pink-light);
+}
+
+/* Profile Section */
+.profile-card {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 30px; background: white; padding: 40px;
+    border-radius: 30px; border: 2px solid var(--pink-light);
+}
+
+@media (min-width: 768px) {
+    .profile-card { flex-direction: row; text-align: left; }
+}
+
+.profile-pic {
+    width: 250px; height: 250px; border-radius: 50%;
+    border: 5px solid var(--pink-light); object-fit: cover;
+}
+
+/* Scratch Card */
+.scratch-card-box {
+    position: relative; width: 300px; height: 150px;
+    margin: 20px auto; border: 4px solid var(--gold);
+    border-radius: 15px; overflow: hidden; background: #fff;
+}
+
+.scratch-message {
+    position: absolute; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; text-align: center; color: var(--pink-dark);
+}
+
+#scratch-canvas { position: absolute; top: 0; left: 0; cursor: crosshair; }
+
+/* Footer Centering */
+footer {
+    background: white; padding: 20px 20px;
+    text-align: center; border-top: 2px solid var(--pink-light);
+}
+
+/* Envelope Modal Styles */
+.envelope-modal {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(255, 245, 248, 0.95);
+    display: flex; align-items: center; justify-content: center;
+}
+
+.envelope-modal.hidden { display: none; }
+
+.open-btn {
+    background: var(--pink-dark); color: white;
+    padding: 15px 30px; border: none; border-radius: 50px;
+    font-size: 1.2rem; cursor: pointer; margin-top: 30px;
+    box-shadow: 0 5px 15px rgba(216, 27, 96, 0.3);
+}
+
+/* Animations */
+.reveal { opacity: 0; transform: translateY(30px); transition: 1s ease; }
+.reveal.active { opacity: 1; transform: translateY(0); }
+
+#particles-container { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+.particle { position: absolute; animation: floatUp 8s linear infinite; }
+
+@keyframes floatUp {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+/* --- NOTEBOOK GALLERY STYLES --- */
+.notebook-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    padding: 20px;
+    justify-items: center;
+}
+
+.photo-frame {
+    background: #fff;
+    padding: 10px 10px 30px 10px; /* Thicker bottom for the caption */
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+    position: relative;
+    width: 220px;
+    transition: transform 0.3s ease;
+}
+
+/* The Tape Effect */
+.tape {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 100px;
+    height: 30px;
+    background: rgba(244, 143, 177, 0.4); /* Semi-transparent pink tape */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    z-index: 10;
+}
+
+.notebook-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.caption {
+    font-family: 'Pacifico', cursive;
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* Random Rotations for the "Hand-Pasted" look */
+.photo-frame:nth-child(odd) {
+    transform: rotate(-3deg);
+}
+
+.photo-frame:nth-child(even) {
+    transform: rotate(2deg);
+}
+
+.photo-frame:nth-child(3n) {
+    transform: rotate(4deg);
+}
+
+/* Hover Effect: The photo "lifts" up */
+.photo-frame:hover {
+    transform: scale(1.05) rotate(0deg);
+    z-index: 20;
+    box-shadow: 0 15px 30px rgba(216, 27, 96, 0.15);
+}
+.wish-form-container { max-width: 500px; margin: 0 auto; }
+.input-field {
+    width: 100%; padding: 12px; margin-bottom: 15px;
+    border: 2px solid #eee; border-radius: 10px; font-family: inherit;
+}
+.input-toggle { display: flex; gap: 10px; margin-bottom: 15px; justify-content: center; }
+.toggle-btn {
+    padding: 8px 15px; border-radius: 20px; border: 1px solid var(--pink-soft);
+    background: white; cursor: pointer; font-size: 0.8rem;
+}
+.toggle-btn.active { background: var(--pink-soft); color: white; }
+
+.mic-btn {
+    background: #ff5252; color: white; border: none; padding: 15px 25px;
+    border-radius: 50px; cursor: pointer; margin-bottom: 10px;
+}
+
+/* Wish Card Style (Notebook Paper) */
+.wish-note {
+    background: #fff9c4; /* Yellow sticky note color */
+    padding: 20px; width: 220px; min-height: 150px;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.05);
+    transform: rotate(-1deg); position: relative;
+}
+.wish-note::before {
+    content: ''; position: absolute; top: -10px; left: 40%;
+    width: 40px; height: 20px; background: rgba(0,0,0,0.1); /* Tape effect */
+}
+.wish-note h4 { color: var(--pink-deep); margin-bottom: 10px; font-size: 1rem; }
+.wish-note p { font-size: 0.9rem; font-style: italic; }
+.hidden { display: none; }
+/* Update these in mom.css */
+.wish-note {
+    background: #fff9c4;
+    padding: 20px;
+    width: 250px;
+    min-height: 150px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.05);
+    position: relative;
+    transform: rotate(-1deg);
+    margin: 10px;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    color: #d81b60;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+.hidden { display: none !important; }
+/* --- FIXED NOTEBOOK GRID --- */
+.notebook-grid {
+    display: flex;
+    flex-wrap: wrap;       /* ALLOWS ITEMS TO WRAP TO NEXT LINE */
+    justify-content: center; /* CENTERS THE PHOTOS */
+    gap: 30px;             /* SPACE BETWEEN PHOTOS */
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px;     /* KEEPS GRID FROM GETTING TOO WIDE */
+    margin: 0 auto;
+}
+
+.photo-frame {
+    background: white;
+    padding: 10px 10px 35px 10px; /* Thicker bottom for that Polaroid look */
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+    position: relative;
+    width: 240px;          /* FIXED WIDTH FOR CONSISTENCY */
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Notebook styling: Slight random tilts */
+.photo-frame:nth-child(odd) {
+    transform: rotate(-2deg);
+}
+
+.photo-frame:nth-child(even) {
+    transform: rotate(2deg);
+}
+
+.photo-frame:hover {
+    transform: scale(1.05) rotate(0deg);
+    z-index: 10;
+    box-shadow: 0 12px 25px rgba(216, 27, 96, 0.2);
+}
+
+.notebook-img {
+    width: 100%;
+    height: 200px;         /* Uniform height for all images */
+    object-fit: cover;     /* Ensures images aren't stretched */
+    display: block;
+    border: 1px solid #f9f9f9;
+}
