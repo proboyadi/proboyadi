@@ -4,7 +4,8 @@ music.loop = true;
 
 let mediaRecorder;
 let audioChunks = [];
-let audioUrl = null;
+let audioUrl = null;           // from live recording
+let uploadedAudioUrl = null;   // from file upload
 
 // 1. Unlock & Initialize
 document.getElementById('open-btn').addEventListener('click', function() {
@@ -64,74 +65,111 @@ function initScratchCard() {
     canvas.addEventListener('touchmove', (e) => { scratch(e); e.preventDefault(); });
 }
 
-// 3. Wishes Persistence Logic
-// Toggle between text and voice wish input areas
+// 3. Wish Type Switching (now with 3 options)
 document.addEventListener('DOMContentLoaded', function() {
-    const textRadio = document.getElementById('wish-type-text');
-    const voiceRadio = document.getElementById('wish-type-voice');
-    const textArea = document.getElementById('text-wish-area');
-    const voiceArea = document.getElementById('voice-rec-area');
+    const textRadio   = document.getElementById('wish-type-text');
+    const voiceRadio  = document.getElementById('wish-type-voice');
+    const uploadRadio = document.getElementById('wish-type-upload');
+
+    const textArea    = document.getElementById('text-wish-area');
+    const voiceArea   = document.getElementById('voice-rec-area');
+    const uploadArea  = document.getElementById('voice-upload-area');
+
     function updateWishType() {
+        textArea.classList.add('hidden');
+        voiceArea.classList.add('hidden');
+        uploadArea.classList.add('hidden');
+
         if (textRadio.checked) {
             textArea.classList.remove('hidden');
-            voiceArea.classList.add('hidden');
-        } else {
-            textArea.classList.add('hidden');
+        } else if (voiceRadio.checked) {
             voiceArea.classList.remove('hidden');
+        } else if (uploadRadio.checked) {
+            uploadArea.classList.remove('hidden');
         }
     }
+
     textRadio.addEventListener('change', updateWishType);
     voiceRadio.addEventListener('change', updateWishType);
+    uploadRadio.addEventListener('change', updateWishType);
+
     updateWishType();
 });
-// Restore sender name and text wish input
 
-function switchInput(type) {
-    document.getElementById('text-msg').classList.toggle('hidden', type !== 'text');
-    document.getElementById('voice-rec-area').classList.toggle('hidden', type !== 'voice');
-    document.getElementById('btn-text').classList.toggle('active', type === 'text');
-    document.getElementById('btn-voice').classList.toggle('active', type === 'voice');
-}
-
-// Recording Logic with Base64 fix
+// Recording Logic (live microphone)
 document.getElementById('record-btn').addEventListener('click', async function() {
     if (!mediaRecorder || mediaRecorder.state === "inactive") {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-        
-        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-        mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            const reader = new FileReader();
-            reader.readAsDataURL(audioBlob); 
-            reader.onloadend = () => {
-                audioUrl = reader.result; // This Base64 string survives reload
-                document.getElementById('rec-status').innerText = "✅ Voice Note Ready!";
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const reader = new FileReader();
+                reader.readAsDataURL(audioBlob); 
+                reader.onloadend = () => {
+                    audioUrl = reader.result;
+                    document.getElementById('rec-status').innerText = "✅ Voice Note Ready!";
+                };
             };
-        };
-        mediaRecorder.start();
-        this.innerText = "🛑 Stop Recording";
-        document.getElementById('rec-status').innerText = "Recording...";
+            mediaRecorder.start();
+            this.innerText = "🛑 Stop Recording";
+            document.getElementById('rec-status').innerText = "Recording...";
+        } catch (err) {
+            alert("Microphone access denied or not available.");
+        }
     } else {
         mediaRecorder.stop();
         this.innerText = "🎤 Start Recording";
     }
 });
 
-document.getElementById('send-wish-btn').addEventListener('click', () => {
-    const name = (document.getElementById('sender-name') && document.getElementById('sender-name').value) ? document.getElementById('sender-name').value : "Anonymous";
-    const isTextWish = document.getElementById('wish-type-text').checked;
-    const text = isTextWish && document.getElementById('text-msg') ? document.getElementById('text-msg').value : "";
-    const isVoiceWish = document.getElementById('wish-type-voice').checked;
+// Handle audio file upload
+document.getElementById('audio-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    if (isTextWish && !text) return alert("Please write your wish!");
-    if (isVoiceWish && !audioUrl) return alert("Please record your audio wish!");
+    if (!file.type.startsWith('audio/')) {
+        alert("Please select an audio file (mp3, wav, m4a, ogg, etc.)");
+        this.value = '';
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {   // 5 MB limit
+        alert("File is too large (maximum 5 MB allowed)");
+        this.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        uploadedAudioUrl = ev.target.result;
+        document.getElementById('upload-status').innerText = 
+            `Selected: ${file.name}  (${(file.size / 1024).toFixed(1)} KB)`;
+    };
+    reader.readAsDataURL(file);
+});
+
+// Send wish (updated to handle all 3 types)
+document.getElementById('send-wish-btn').addEventListener('click', () => {
+    const name = document.getElementById('sender-name')?.value.trim() || "Anonymous";
+    
+    const isText   = document.getElementById('wish-type-text').checked;
+    const isRecord = document.getElementById('wish-type-voice').checked;
+    const isUpload = document.getElementById('wish-type-upload').checked;
+
+    const text = isText ? (document.getElementById('text-msg')?.value.trim() || "") : "";
+
+    if (isText   && !text)               return alert("Please write your wish!");
+    if (isRecord && !audioUrl)           return alert("Please record your audio wish!");
+    if (isUpload && !uploadedAudioUrl)   return alert("Please upload an audio file!");
 
     const newWish = {
         name: name,
-        text: isTextWish ? text : null,
-        audio: isVoiceWish ? audioUrl : null,
+        text: isText ? text : null,
+        audio: isRecord ? audioUrl : (isUpload ? uploadedAudioUrl : null),
         id: Date.now()
     };
 
@@ -139,11 +177,16 @@ document.getElementById('send-wish-btn').addEventListener('click', () => {
     wishes.push(newWish);
     localStorage.setItem('mummyWishes', JSON.stringify(wishes));
 
-    displayStoredWishes();
-    if(document.getElementById('text-msg')) document.getElementById('text-msg').value = "";
-    if(document.getElementById('sender-name')) document.getElementById('sender-name').value = "";
+    // Reset form
+    if (document.getElementById('text-msg')) document.getElementById('text-msg').value = "";
+    if (document.getElementById('sender-name')) document.getElementById('sender-name').value = "";
+    if (document.getElementById('audio-upload')) document.getElementById('audio-upload').value = "";
+    if (document.getElementById('upload-status')) document.getElementById('upload-status').innerText = "No file selected";
     audioUrl = null;
-    document.getElementById('rec-status').innerText = "Ready to record...";
+    uploadedAudioUrl = null;
+    if (document.getElementById('rec-status')) document.getElementById('rec-status').innerText = "Ready to record...";
+
+    displayStoredWishes();
 });
 
 function displayStoredWishes() {
@@ -156,7 +199,7 @@ function displayStoredWishes() {
         card.className = 'wish-note';
         card.innerHTML = `
             <div class="tape"></div>
-            <h4>From: ${wish.name ? wish.name : 'Anonymous'}</h4>
+            <h4>From: ${wish.name || 'Anonymous'}</h4>
             ${wish.audio ? `<audio src="${wish.audio}" controls style="width:100%"></audio>` : ''}
             ${wish.text ? `<p>"${wish.text}"</p>` : ''}
             <button onclick="deleteWish(${wish.id})" class="delete-btn">×</button>
@@ -172,7 +215,7 @@ function deleteWish(id) {
     displayStoredWishes();
 }
 
-// Helper Animations
+// Helper Animations (unchanged)
 function startParticles() { /* ... keep your existing startParticles code ... */ }
 function initReveal() {
     const observer = new IntersectionObserver((entries) => {
