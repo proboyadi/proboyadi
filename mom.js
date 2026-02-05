@@ -65,8 +65,6 @@ function initScratchCard() {
 }
 
 // 3. Wishes Persistence Logic
-document.getElementById('btn-text').addEventListener('click', () => switchInput('text'));
-document.getElementById('btn-voice').addEventListener('click', () => switchInput('voice'));
 
 function switchInput(type) {
     document.getElementById('text-msg').classList.toggle('hidden', type !== 'text');
@@ -102,27 +100,18 @@ document.getElementById('record-btn').addEventListener('click', async function()
 });
 
 document.getElementById('send-wish-btn').addEventListener('click', () => {
-    const name = document.getElementById('sender-name').value || "Anonymous";
-    const text = document.getElementById('text-msg').value;
-    const isVoice = !document.getElementById('voice-rec-area').classList.contains('hidden');
-    
-    if(!isVoice && !text) return alert("Please write a message!");
+    if (!audioUrl) return alert("Please record your audio wish first!");
 
     const newWish = {
-        name: name,
-        text: isVoice ? null : text,
-        audio: isVoice ? audioUrl : null,
+        audio: audioUrl,
         id: Date.now()
     };
 
     let wishes = JSON.parse(localStorage.getItem('mummyWishes')) || [];
     wishes.push(newWish);
     localStorage.setItem('mummyWishes', JSON.stringify(wishes));
-    
+
     displayStoredWishes();
-    // Reset fields
-    document.getElementById('text-msg').value = "";
-    document.getElementById('sender-name').value = "";
     audioUrl = null;
     document.getElementById('rec-status').innerText = "Ready to record...";
 });
