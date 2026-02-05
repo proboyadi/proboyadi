@@ -65,6 +65,26 @@ function initScratchCard() {
 }
 
 // 3. Wishes Persistence Logic
+// Toggle between text and voice wish input areas
+document.addEventListener('DOMContentLoaded', function() {
+    const textRadio = document.getElementById('wish-type-text');
+    const voiceRadio = document.getElementById('wish-type-voice');
+    const textArea = document.getElementById('text-wish-area');
+    const voiceArea = document.getElementById('voice-rec-area');
+    function updateWishType() {
+        if (textRadio.checked) {
+            textArea.classList.remove('hidden');
+            voiceArea.classList.add('hidden');
+        } else {
+            textArea.classList.add('hidden');
+            voiceArea.classList.remove('hidden');
+        }
+    }
+    textRadio.addEventListener('change', updateWishType);
+    voiceRadio.addEventListener('change', updateWishType);
+    updateWishType();
+});
+// Restore sender name and text wish input
 
 function switchInput(type) {
     document.getElementById('text-msg').classList.toggle('hidden', type !== 'text');
@@ -100,10 +120,18 @@ document.getElementById('record-btn').addEventListener('click', async function()
 });
 
 document.getElementById('send-wish-btn').addEventListener('click', () => {
-    if (!audioUrl) return alert("Please record your audio wish first!");
+    const name = (document.getElementById('sender-name') && document.getElementById('sender-name').value) ? document.getElementById('sender-name').value : "Anonymous";
+    const isTextWish = document.getElementById('wish-type-text').checked;
+    const text = isTextWish && document.getElementById('text-msg') ? document.getElementById('text-msg').value : "";
+    const isVoiceWish = document.getElementById('wish-type-voice').checked;
+
+    if (isTextWish && !text) return alert("Please write your wish!");
+    if (isVoiceWish && !audioUrl) return alert("Please record your audio wish!");
 
     const newWish = {
-        audio: audioUrl,
+        name: name,
+        text: isTextWish ? text : null,
+        audio: isVoiceWish ? audioUrl : null,
         id: Date.now()
     };
 
@@ -112,6 +140,8 @@ document.getElementById('send-wish-btn').addEventListener('click', () => {
     localStorage.setItem('mummyWishes', JSON.stringify(wishes));
 
     displayStoredWishes();
+    if(document.getElementById('text-msg')) document.getElementById('text-msg').value = "";
+    if(document.getElementById('sender-name')) document.getElementById('sender-name').value = "";
     audioUrl = null;
     document.getElementById('rec-status').innerText = "Ready to record...";
 });
@@ -126,8 +156,9 @@ function displayStoredWishes() {
         card.className = 'wish-note';
         card.innerHTML = `
             <div class="tape"></div>
-            <h4>From: ${wish.name}</h4>
-            ${wish.audio ? `<audio src="${wish.audio}" controls style="width:100%"></audio>` : `<p>"${wish.text}"</p>`}
+            <h4>From: ${wish.name ? wish.name : 'Anonymous'}</h4>
+            ${wish.audio ? `<audio src="${wish.audio}" controls style="width:100%"></audio>` : ''}
+            ${wish.text ? `<p>"${wish.text}"</p>` : ''}
             <button onclick="deleteWish(${wish.id})" class="delete-btn">×</button>
         `;
         container.appendChild(card);
