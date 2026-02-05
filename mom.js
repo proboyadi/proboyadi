@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateWishType();
 });
 
-// Recording Logic (live microphone)
+// Recording Logic (live microphone)  ── FIXED MIME TYPE ──
 document.getElementById('record-btn').addEventListener('click', async function() {
     if (!mediaRecorder || mediaRecorder.state === "inactive") {
         try {
@@ -106,7 +106,11 @@ document.getElementById('record-btn').addEventListener('click', async function()
             
             mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
             mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                // ─────────────── IMPORTANT CHANGE HERE ───────────────
+                const realMimeType = mediaRecorder.mimeType || 'audio/webm;codecs=opus';
+                const audioBlob = new Blob(audioChunks, { type: realMimeType });
+                // ──────────────────────────────────────────────────────
+
                 const reader = new FileReader();
                 reader.readAsDataURL(audioBlob); 
                 reader.onloadend = () => {
@@ -126,7 +130,7 @@ document.getElementById('record-btn').addEventListener('click', async function()
     }
 });
 
-// Handle audio file upload
+// Handle audio file upload  ── FIXED: keep real file type ──
 document.getElementById('audio-upload').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -145,7 +149,7 @@ document.getElementById('audio-upload').addEventListener('change', function(e) {
 
     const reader = new FileReader();
     reader.onload = function(ev) {
-        uploadedAudioUrl = ev.target.result;
+        uploadedAudioUrl = ev.target.result;  // keeps correct mime type like audio/mpeg, audio/mp4 etc.
         document.getElementById('upload-status').innerText = 
             `Selected: ${file.name}  (${(file.size / 1024).toFixed(1)} KB)`;
     };
@@ -216,7 +220,10 @@ function deleteWish(id) {
 }
 
 // Helper Animations (unchanged)
-function startParticles() { /* ... keep your existing startParticles code ... */ }
+function startParticles() { 
+    // your existing particles code remains here 
+}
+
 function initReveal() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
