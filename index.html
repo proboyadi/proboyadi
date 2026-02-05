@@ -146,12 +146,20 @@
                         <p>Leave a message or a voice note for Mummy</p>
                     </div>
 
-                     <div class="wish-form-container">
-                        <div id="voice-rec-area">
+                    <div class="wish-form-container">
+                        <input type="text" id="sender-name" placeholder="Your Name" class="input-field">
+                        <div style="margin: 10px 0 15px 0;">
+                            <label><input type="radio" name="wish-type" id="wish-type-text" value="text" checked> Text Wish</label>
+                            <label style="margin-left: 20px;"><input type="radio" name="wish-type" id="wish-type-voice" value="voice"> Voice Wish</label>
+                        </div>
+                        <div id="text-wish-area">
+                            <textarea id="text-msg" class="input-field" placeholder="Write your birthday wish here..."></textarea>
+                        </div>
+                        <div id="voice-rec-area" class="hidden">
                             <button id="record-btn" class="mic-btn">🎤 Start Recording</button>
                             <p id="rec-status">Ready to record...</p>
                         </div>
-                        <button id="send-wish-btn" class="open-btn">Send Audio Wish to Mummy ✨</button>
+                        <button id="send-wish-btn" class="open-btn">Send Wish to Mummy ✨</button>
                     </div>
 
                     <hr style="margin: 40px 0; border: 0; border-top: 1px dashed var(--pink-soft);">
@@ -161,17 +169,6 @@
                 </div>
             </section>
 
-        </main>
-        
-        <footer>
-                <p><center>Created with Love for the Best Mummy 💖</center></p>
-                <p><center>© 2026 Pro Boy Adi</center></p>
-        </footer>
-    </div>
-
-    <script src="mom.js"></script>
-</body>
-</html> 
         </main>
         
         <footer>
